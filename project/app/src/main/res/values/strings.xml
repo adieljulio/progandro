@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">GoGoGicha</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="loginFB">Login with Facebook</string>
+    <string name="signup">Sign Up</string>
+    <string name="balance">My Balance:</string>
+    <string name="ride">Let's Ride</string>
+    <string name="history">History</string>
+    <string name="account">My Account</string>
+    <string name="scanQR">Scan QR Code</string>
+    <string name="scan">Scan</string>
+    <string name="origin">Origin</string>
+    <string name="originPlace">Sta. Solo Balapan</string>
+    <string name="dest">Destination</string>
+    <string name="destPlace">Sta. Jogjakarta</string>
+    <string name="go">Go</string>
+    <string name="arrived">You've Arrived at Your Destination</string>
+    <string name="payment">Total Payment</string>
+    <string name="finish">Finish</string>
+</resources>
