@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://E:\Documents\Prog Andro\progandro\project\app\app.iml" filepath="E:\Documents\Prog Andro\progandro\project\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/project.iml" filepath="$PROJECT_DIR$/project.iml" />
+      <module fileurl="file://E:\Documents\Prog Andro\progandro\project\project.iml" filepath="E:\Documents\Prog Andro\progandro\project\project.iml" />
     </modules>
   </component>
 </project>

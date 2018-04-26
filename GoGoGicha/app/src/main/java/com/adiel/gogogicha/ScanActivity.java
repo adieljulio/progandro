@@ -1,5 +1,7 @@
-package ukdw.ac.id.smart_ticketing;
+package com.adiel.gogogicha;
 
+import android.app.Activity;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,15 +11,65 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.TextView;
 
+import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
-/**
- * Created by hp on 23/04/2018.
- */
 
+public class ScanActivity extends Activity implements QRCodeReaderView.OnQRCodeReadListener {
+
+    private TextView resultTextView;
+    private QRCodeReaderView qrCodeReaderView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_scan);
+        resultTextView = (TextView) findViewById(R.id.txvScan);
+
+        qrCodeReaderView = (QRCodeReaderView) findViewById(R.id.qrView);
+        qrCodeReaderView.setOnQRCodeReadListener(this);
+
+        // Use this function to enable/disable decoding
+        qrCodeReaderView.setQRDecodingEnabled(true);
+
+        // Use this function to change the autofocus interval (default is 5 secs)
+        qrCodeReaderView.setAutofocusInterval(2000L);
+
+        // Use this function to enable/disable Torch
+        qrCodeReaderView.setTorchEnabled(true);
+
+        // Use this function to set front camera preview
+        qrCodeReaderView.setFrontCamera();
+
+        // Use this function to set back camera preview
+        qrCodeReaderView.setBackCamera();
+    }
+
+    // Called when a QR is decoded
+    // "text" : the text encoded in QR
+    // "points" : points where QR control points are placed in View
+    @Override
+    public void onQRCodeRead(String text, PointF[] points) {
+        resultTextView.setText(text);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        qrCodeReaderView.startCamera();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        qrCodeReaderView.stopCamera();
+    }
+}
+
+/*
 public class ScanActivity extends AppCompatActivity {
     private SurfaceView cameraView;
     private TextView barcodeInfo;
@@ -79,3 +131,4 @@ public class ScanActivity extends AppCompatActivity {
 
 
 }
+*/
