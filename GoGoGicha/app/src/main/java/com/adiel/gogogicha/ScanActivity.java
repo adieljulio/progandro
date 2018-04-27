@@ -1,6 +1,7 @@
 package com.adiel.gogogicha;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +23,8 @@ public class ScanActivity extends Activity implements QRCodeReaderView.OnQRCodeR
 
     private TextView resultTextView;
     private QRCodeReaderView qrCodeReaderView;
+    private String result = "";
+    private boolean isScaned = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,21 @@ public class ScanActivity extends Activity implements QRCodeReaderView.OnQRCodeR
     // "points" : points where QR control points are placed in View
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
-        resultTextView.setText(text);
+        result = text;
+        String[] data = result.split("/");
+        Intent intent = new Intent(this,RideActivity.class);
+        for (int i=0 ;i<data.length;i++){
+            Log.d("I",i+" "+data[i]);
+        }
+        if(data[2].equals("gogogicha.com")&&!isScaned){
+            if(data.length>3){
+                resultTextView.setText(data[3]);
+                intent.putExtra("code",data[3]);
+                isScaned=true;
+                startActivity(intent);
+                isScaned=false;
+            }
+        }
     }
 
     @Override
