@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "780262548724",
+    "firebase_url": "https://gogogicha.firebaseio.com",
+    "project_id": "gogogicha",
+    "storage_bucket": "gogogicha.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780262548724:android:5386116a31add102",
+        "android_client_info": {
+          "package_name": "com.adiel.gogogicha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780262548724-ga9daoeevkvo92dtb5n40bdss7bscfr4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adiel.gogogicha",
+            "certificate_hash": "10fa768d93586dd5c54f7a53712ce80555398390"
+          }
+        },
+        {
+          "client_id": "780262548724-fsc4ds2l0803v77cnqq0l98qs3dm0hmp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1r58GvViTvDpmNLlHB2IHdAULyfmveqc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "780262548724-fsc4ds2l0803v77cnqq0l98qs3dm0hmp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
