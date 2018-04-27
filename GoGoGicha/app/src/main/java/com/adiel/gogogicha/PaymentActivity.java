@@ -2,6 +2,7 @@ package com.adiel.gogogicha;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,25 +12,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+/**
+ * Created by hp on 27/04/2018.
+ */
 
-public class MainActivity extends AppCompatActivity {
-    private EditText txtUsername;
-    private EditText txtPassword;
-    private Button btnLogin;
-    private Button btnLoginFB;
-    private TextView btnSignUp;
+public class PaymentActivity extends AppCompatActivity {
+    private TextView txvPayment;
+    private Button btnFinish;
     private DrawerLayout mDrawerLayout;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        super.setContentView(R.layout.activity_payment);
 
-        Toolbar toolbar = findViewById(R.id.main_toolbar);
+        Toolbar toolbar = findViewById(R.id.payment_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
@@ -54,13 +53,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        txtUsername = (EditText)findViewById(R.id.txtUsername);
-        txtPassword = (EditText)findViewById(R.id.txtPassword);
-        btnLogin = (Button)findViewById(R.id.btnLogin);
-        btnLoginFB = (Button)findViewById(R.id.btnLoginFB);
-        btnSignUp = (TextView)findViewById(R.id.btnSignUp);
+        txvPayment = (TextView)findViewById(R.id.txvPayment);
+        btnFinish = (Button)findViewById(R.id.btnFinish);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loadHomeView();

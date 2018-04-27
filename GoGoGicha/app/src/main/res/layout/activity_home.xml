@@ -1,104 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Use DrawerLayout as root container for activity -->
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <ImageButton
-        android:id="@+id/iBtnRide"
+    <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/home_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Balance"
+                android:textStyle="bold"
+                android:layout_marginLeft="170dp"
+                android:fontFamily="casual"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 0"
+                android:fontFamily="casual"
+                android:layout_marginLeft="10dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/imvOnRide"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_ride"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"/>
+            <TextView
+                android:id="@+id/txvOnRide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ride"
+                android:layout_gravity="center"
+                android:fontFamily="casual"
+                android:textStyle="bold"/>
+            <ImageView
+                android:id="@+id/imvHistory"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_history"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"/>
+            <TextView
+                android:id="@+id/txvHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/history"
+                android:layout_gravity="center"
+                android:fontFamily="casual"
+                android:textStyle="bold"/>
+            <ImageView
+                android:id="@+id/imvAccount"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_user"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"/>
+            <TextView
+                android:id="@+id/txvAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/account"
+                android:layout_gravity="center"
+                android:fontFamily="casual"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_launcher"
-        tools:layout_editor_absoluteX="144dp"
-        tools:layout_editor_absoluteY="100dp" />
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/drawer_view"
+        app:headerLayout="@layout/nav_header"/>
 
-    <ImageButton
-        android:id="@+id/iBtnHistory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@mipmap/ic_launcher"
-        tools:layout_editor_absoluteY="238dp" />
-
-    <ImageButton
-        android:id="@+id/iBtnAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@mipmap/ic_launcher"
-        tools:layout_editor_absoluteY="373dp" />
-
-    <TextView
-        android:id="@+id/txvBalance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:fontFamily="casual"
-        android:text="@string/balance"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/txvBalance2"
-        app:layout_constraintHorizontal_bias="0.989"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="51dp" />
-
-    <TextView
-        android:id="@+id/txvRide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="5dp"
-        android:fontFamily="casual"
-        android:text="@string/ride"
-        app:layout_constraintBottom_toTopOf="@+id/iBtnHistory"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iBtnRide" />
-
-    <TextView
-        android:id="@+id/txvHistory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="5dp"
-        android:fontFamily="casual"
-        android:text="@string/history"
-        app:layout_constraintBottom_toTopOf="@+id/iBtnAccount"
-        app:layout_constraintTop_toBottomOf="@+id/iBtnHistory"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="169dp" />
-
-    <TextView
-        android:id="@+id/txvAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="5dp"
-        android:fontFamily="casual"
-        android:text="@string/account"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iBtnAccount"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="155dp" />
-
-    <TextView
-        android:id="@+id/txvBalance2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="88dp"
-        android:fontFamily="casual"
-        android:text="Rp"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="51dp" />
-
-</android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.DrawerLayout>

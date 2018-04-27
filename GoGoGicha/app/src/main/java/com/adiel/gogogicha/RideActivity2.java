@@ -11,28 +11,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
  * Created by hp on 27/04/2018.
  */
 
-public class HomeActivity extends AppCompatActivity {
-    private ImageView imvOnRide;
-    private ImageView imvHistory;
-    private ImageView imvAccount;
-    private TextView txvOnRide;
-    private TextView txvHistory;
-    private TextView txvAccount;
+public class RideActivity2 extends AppCompatActivity {
+    private TextView txvOrigin;
+    private TextView txvDest;
+    private Button btnScanOri;
+    private Button btnScanDest;
     private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_home);
+        super.setContentView(R.layout.activity_ride);
 
-        Toolbar toolbar = findViewById(R.id.home_toolbar);
+        Toolbar toolbar = findViewById(R.id.ride_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
@@ -57,70 +55,31 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 });
 
-        imvOnRide = (ImageView)findViewById(R.id.imvOnRide);
-        imvHistory = (ImageView)findViewById(R.id.imvHistory);
-        imvAccount = (ImageView)findViewById(R.id.imvAccount);
-        txvOnRide = (TextView)findViewById(R.id.txvOnRide);
-        txvHistory = (TextView)findViewById(R.id.txvHistory);
-        txvAccount = (TextView)findViewById(R.id.txvAccount);
+        txvOrigin = (TextView)findViewById(R.id.txvOrigin);
+        txvDest = (TextView)findViewById(R.id.txvDest);
+        btnScanOri = (Button)findViewById(R.id.btnScanOri);
+        btnScanDest = (Button)findViewById(R.id.btnScanDest);
 
-        imvOnRide.setOnClickListener(new View.OnClickListener() {
+        btnScanOri.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadOnRideView();
+                loadScanView();
             }
         });
 
-        imvHistory.setOnClickListener(new View.OnClickListener() {
+        btnScanDest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadHistoryView();
-            }
-        });
-
-        imvAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadAccountView();
-            }
-        });
-
-        txvOnRide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadOnRideView();
-            }
-        });
-
-        txvHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadHistoryView();
-            }
-        });
-
-        txvAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadAccountView();
+                loadScanView();
             }
         });
     }
 
-    private void loadOnRideView(){
-        Intent intent = new Intent(this, RideActivity.class);
+    private void loadScanView(){
+        Intent intent = new Intent(this, ScanActivity.class);
         startActivity(intent);
     }
 
-    private void loadHistoryView(){
-        Intent intent = new Intent(this, HistoryActivity.class);
-        startActivity(intent);
-    }
-
-    private void loadAccountView(){
-        Intent intent = new Intent(this, AccountActivity.class);
-        startActivity(intent);
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -130,6 +89,4 @@ public class HomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
-
