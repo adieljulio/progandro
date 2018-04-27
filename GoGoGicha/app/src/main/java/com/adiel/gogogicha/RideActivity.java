@@ -1,5 +1,6 @@
 package com.adiel.gogogicha;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
@@ -32,6 +33,11 @@ public class RideActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*if(!User.internetCheck()){
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
+
+        }*/
         setContentView(R.layout.activity_ride);
         db = FirebaseDatabase.getInstance();
         dbUser = db.getReference("user").child(User.user);
@@ -51,6 +57,24 @@ public class RideActivity extends AppCompatActivity {
                 }
             }
             if(code.split("_")[1].equals("out")){
+                /*
+                dbUser.child("ongoing").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue().equals("")){
+
+                        }else{
+                            Intent intent = new Intent(this,RideActivity.class);
+                            intent.putExtra("key",dataSnapshot.getValue().toString());
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                })*/
                 dbUser.child("ongoing").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -80,5 +104,9 @@ public class RideActivity extends AppCompatActivity {
             dbHistoryNow = dbHistory.child(getIntent().getExtras().getString("key"));
 
         }
+    }
+
+    private void setView(){
+
     }
 }
