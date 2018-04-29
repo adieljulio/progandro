@@ -20,9 +20,11 @@ import android.widget.TextView;
 
 public class HomeActivity extends AppCompatActivity {
     private ImageView imvOnRide;
+    private ImageView imvBuying;
     private ImageView imvHistory;
     private ImageView imvAccount;
     private TextView txvOnRide;
+    private TextView txvBuying;
     private TextView txvHistory;
     private TextView txvAccount;
     private DrawerLayout mDrawerLayout;
@@ -46,21 +48,35 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         // set item as selected to persist highlight
-                        menuItem.setChecked(true);
+                        //menuItem.setChecked(true);
                         // close drawer when item is tapped
-                        mDrawerLayout.closeDrawers();
+                        //mDrawerLayout.closeDrawers();
 
                         // Add code here to update the UI based on the item selected
                         // For example, swap UI fragments here
+                        int id = menuItem.getItemId();
+                        if (id == R.id.nav_home){
+                            loadHomeView();
+                        } else if (id == R.id.nav_ride){
+                            loadOnRideView();
+                        } else if (id == R.id.nav_history) {
+                            loadHistoryView();
+                        } else if (id == R.id.nav_account){
+                            loadAccountView();
+                        } else if (id == R.id.nav_logout){
+                            loadLoginView();
+                        }
 
                         return true;
                     }
                 });
 
         imvOnRide = (ImageView)findViewById(R.id.imvOnRide);
+        imvBuying = (ImageView)findViewById(R.id.imvBuying);
         imvHistory = (ImageView)findViewById(R.id.imvHistory);
         imvAccount = (ImageView)findViewById(R.id.imvAccount);
         txvOnRide = (TextView)findViewById(R.id.txvOnRide);
+        txvBuying = (TextView)findViewById(R.id.txvBuying);
         txvHistory = (TextView)findViewById(R.id.txvHistory);
         txvAccount = (TextView)findViewById(R.id.txvAccount);
 
@@ -68,6 +84,13 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 loadOnRideView();
+            }
+        });
+
+        imvBuying.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                loadBuyingActivity();
             }
         });
 
@@ -92,6 +115,13 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        txvBuying.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadBuyingActivity();
+            }
+        });
+
         txvHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,8 +138,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void loadOnRideView(){
-        Intent intent = new Intent(this, RideActivity.class);
-        startActivity(intent);
+        if (User.ongoing.equalsIgnoreCase("")) {
+            Intent intent = new Intent(this, GetRideActivity.class);
+            startActivity(intent);
+        } else{
+            loadHistoryView();
+        }
     }
 
     private void loadHistoryView(){
@@ -121,6 +155,25 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AccountActivity.class);
         startActivity(intent);
     }
+
+    private void loadHomeView(){
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void loadLoginView(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void loadBuyingActivity(){
+        Intent intent = new Intent(this, BuyingActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

@@ -14,12 +14,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by hp on 27/04/2018.
  */
 
 public class PaymentActivity extends AppCompatActivity {
     private TextView txvPayment;
+    private TextView txvPaymentTitle;
+    private TextView txvBalance;
     private Button btnFinish;
     private DrawerLayout mDrawerLayout;
 
@@ -27,6 +31,17 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_payment);
+
+        txvPayment = (TextView)findViewById(R.id.txvPayment);
+        txvPaymentTitle = (TextView)findViewById(R.id.txvPaymentTitle);
+        txvBalance = (TextView)findViewById(R.id.txvBalance);
+        btnFinish = (Button)findViewById(R.id.btnFinish);
+
+        if (getIntent().getExtras().getString("triggerView").equalsIgnoreCase("buyingActivity")){
+            txvPaymentTitle.setText("Your've Buy A/An Item !");
+        } else{
+            txvPaymentTitle.setText("You've Arrived At Your Destination !");
+        }
 
         Toolbar toolbar = findViewById(R.id.payment_toolbar);
         setSupportActionBar(toolbar);
@@ -42,19 +57,28 @@ public class PaymentActivity extends AppCompatActivity {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         // set item as selected to persist highlight
-                        menuItem.setChecked(true);
+                        //menuItem.setChecked(true);
                         // close drawer when item is tapped
-                        mDrawerLayout.closeDrawers();
+                        //mDrawerLayout.closeDrawers();
 
                         // Add code here to update the UI based on the item selected
                         // For example, swap UI fragments here
+                        int id = menuItem.getItemId();
+                        if (id == R.id.nav_home){
+                            loadHomeView();
+                        } else if (id == R.id.nav_ride){
+                            loadOnRideView();
+                        } else if (id == R.id.nav_history) {
+                            loadHistoryView();
+                        } else if (id == R.id.nav_account){
+                            loadAccountView();
+                        } else if (id == R.id.nav_logout){
+                            loadLoginView();
+                        }
 
                         return true;
                     }
                 });
-
-        txvPayment = (TextView)findViewById(R.id.txvPayment);
-        btnFinish = (Button)findViewById(R.id.btnFinish);
 
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,9 +88,35 @@ public class PaymentActivity extends AppCompatActivity {
         });
     }
 
+    private void loadOnRideView(){
+        if (User.ongoing.equalsIgnoreCase("")) {
+            Intent intent = new Intent(this, GetRideActivity.class);
+            startActivity(intent);
+        } else{
+            loadHistoryView();
+        }
+    }
+
+    private void loadHistoryView(){
+        Intent intent = new Intent(this, HistoryActivity.class);
+        startActivity(intent);
+    }
+
+    private void loadAccountView(){
+        Intent intent = new Intent(this, AccountActivity.class);
+        startActivity(intent);
+    }
+
     private void loadHomeView(){
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
+        finish();
+    }
+
+    private void loadLoginView(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -78,4 +128,5 @@ public class PaymentActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

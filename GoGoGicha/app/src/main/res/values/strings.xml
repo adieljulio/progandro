@@ -6,7 +6,8 @@
     <string name="loginFB">Login with Facebook</string>
     <string name="signup">Sign Up</string>
     <string name="balance">My Balance:</string>
-    <string name="ride">On Ride</string>
+    <string name="ride">Let\'s Ride</string>
+    <string name="buy">Let\'s Buying</string>
     <string name="history">History</string>
     <string name="account">My Account</string>
     <string name="scanQR">Scan QR Code</string>
@@ -16,7 +17,8 @@
     <string name="dest">Destination</string>
     <string name="destPlace">Sta. .....</string>
     <string name="go">Go</string>
-    <string name="arrived">You've Arrived at Your Destination</string>
+    <string name="arrived">You\'ve Arrived at Your Destination !</string>
+    <string name="buying">You\'ve Buy A/An Item ! </string>
     <string name="payment">Total Payment</string>
     <string name="finish">Finish</string>
     <string name="home">Home</string>

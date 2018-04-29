@@ -9,21 +9,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ScanActivity"/>
-        <activity android:name=".HistoryActivity"/>
-        <activity android:name=".HomeActivity"/>
-        <activity android:name=".PaymentActivity"/>
-        <activity android:name=".RideActivity2"/>
-        <activity android:name=".AccountActivity"/>
-        <activity android:name=".RideActivity"/>
-
+        <activity android:name=".ScanActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".HistoryActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".HomeActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PaymentActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AccountActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".RideActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".GetRideActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".BuyingActivity"
+            android:screenOrientation="portrait"/>
     </application>
     <uses-permission android:name="android.permission.CAMERA"/>
 </manifest>

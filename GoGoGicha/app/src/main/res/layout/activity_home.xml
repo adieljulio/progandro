@@ -27,14 +27,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="My Balance"
                 android:textStyle="bold"
-                android:layout_marginLeft="170dp"
+                android:layout_marginLeft="200dp"
                 android:fontFamily="casual"/>
 
             <TextView
@@ -55,7 +55,7 @@
                 android:layout_height="80dp"
                 android:src="@drawable/ic_ride"
                 android:layout_gravity="center"
-                android:layout_marginTop="12dp"/>
+                android:layout_marginTop="10dp"/>
             <TextView
                 android:id="@+id/txvOnRide"
                 android:layout_width="wrap_content"
@@ -65,12 +65,27 @@
                 android:fontFamily="casual"
                 android:textStyle="bold"/>
             <ImageView
+                android:id="@+id/imvBuying"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_basket"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"/>
+            <TextView
+                android:id="@+id/txvBuying"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/buy"
+                android:layout_gravity="center"
+                android:fontFamily="casual"
+                android:textStyle="bold"/>
+            <ImageView
                 android:id="@+id/imvHistory"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@drawable/ic_history"
                 android:layout_gravity="center"
-                android:layout_marginTop="12dp"/>
+                android:layout_marginTop="10dp"/>
             <TextView
                 android:id="@+id/txvHistory"
                 android:layout_width="wrap_content"
@@ -85,7 +100,7 @@
                 android:layout_height="80dp"
                 android:src="@drawable/ic_user"
                 android:layout_gravity="center"
-                android:layout_marginTop="12dp"/>
+                android:layout_marginTop="10dp"/>
             <TextView
                 android:id="@+id/txvAccount"
                 android:layout_width="wrap_content"

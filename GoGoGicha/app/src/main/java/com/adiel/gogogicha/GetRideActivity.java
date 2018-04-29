@@ -2,44 +2,31 @@ package com.adiel.gogogicha;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.view.View;
+import android.widget.Button;
 
 /**
- * Created by hp on 27/04/2018.
+ * Created by hp on 29/04/2018.
  */
 
-public class HistoryActivity extends AppCompatActivity {
-    private HistoryAdapter historyAdapter;
-    private RecyclerView rcyHistory;
+public class GetRideActivity extends AppCompatActivity {
+    private Button btnScan;
     private DrawerLayout mDrawerLayout;
-    private FirebaseDatabase db;
-    private DatabaseReference dbUser;
-    private DatabaseReference dbHistory;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history);
+        super.setContentView(R.layout.activity_getride);
 
-        Toolbar toolbar = findViewById(R.id.history_toolbar);
+        Toolbar toolbar = findViewById(R.id.getride_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
@@ -76,36 +63,20 @@ public class HistoryActivity extends AppCompatActivity {
                     }
                 });
 
-        //instansiasi atribut
-        rcyHistory= (RecyclerView)findViewById(R.id.rcyHistory);
-        List<History> listFilm = new ArrayList<History>();
-        historyAdapter = new HistoryAdapter(listFilm, this);
+        btnScan = (Button)findViewById(R.id.btnScan);
 
-        //menggabungkan RecyclerView dengan FilmAdapter
-        RecyclerView.LayoutManager lm = new LinearLayoutManager(this);
-        rcyHistory.setLayoutManager(lm);
-        rcyHistory.setItemAnimator(new DefaultItemAnimator());
-        rcyHistory.setAdapter(historyAdapter);
-
-        dbUser = db.getReference("user").child(User.user);
-        dbHistory = dbUser.child("history");
-
-        final List<History> historyList = new ArrayList<History>();
-
-        dbHistory.addValueEventListener(new ValueEventListener() {
+        btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                History history = dataSnapshot.getValue(History.class);
-                historyList.add(history);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onClick(View view) {
+                loadScanView();
             }
         });
+    }
 
-        historyAdapter.notifyDataSetChanged();
+    private void loadScanView(){
+        Intent intent = new Intent(this, ScanActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void loadOnRideView(){

@@ -4,8 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -13,6 +21,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,25 +33,92 @@ import java.util.List;
  */
 
 public class RideActivity extends AppCompatActivity {
-
+    private TextView txvOrigin;
+    private TextView txvDest;
+    private Button btnScanDest;
+    private Button btnDone;
+    private TextView txvBoardingTime;
+    private TextView txvArrivedTime;
+    private DrawerLayout mDrawerLayout;
     private FirebaseDatabase db;
     private DatabaseReference dbUser;
     private DatabaseReference dbHistory;
     private DatabaseReference dbHistoryNow;
+    private DatabaseReference dbSta;
     private String ongoing;
     private String code;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_ride);
         /*if(!User.internetCheck()){
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(1);
 
         }*/
-        setContentView(R.layout.activity_ride);
+
+        Toolbar toolbar = findViewById(R.id.ride_toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        //menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        //mDrawerLayout.closeDrawers();
+
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+                        int id = menuItem.getItemId();
+                        if (id == R.id.nav_home){
+                            loadHomeView();
+                        } else if (id == R.id.nav_ride){
+                            loadOnRideView();
+                        } else if (id == R.id.nav_history) {
+                            loadHistoryView();
+                        } else if (id == R.id.nav_account){
+                            loadAccountView();
+                        } else if (id == R.id.nav_logout){
+                            loadLoginView();
+                        }
+
+                        return true;
+                    }
+                });
+
+        txvOrigin = (TextView)findViewById(R.id.txvOrigin);
+        txvDest = (TextView)findViewById(R.id.txvDest);
+        btnScanDest = (Button)findViewById(R.id.btnScanDest);
+        txvBoardingTime = (TextView)findViewById(R.id.txvBoardingTime);
+        txvArrivedTime = (TextView)findViewById(R.id.txvArrivedTime);
+        btnDone = (Button)findViewById(R.id.btnDone);
+
+        btnScanDest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadScanView();
+            }
+        });
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadPaymentView();
+            }
+        });
+
         db = FirebaseDatabase.getInstance();
         dbUser = db.getReference("user").child(User.user);
         dbHistory = dbUser.child("history");
+        dbSta = db.getReference("sta").child("lpn");
 
         if(getIntent().getExtras().getString("code")!=null){
             code = getIntent().getExtras().getString("code");
@@ -54,6 +131,18 @@ public class RideActivity extends AppCompatActivity {
                     dbHistoryNow.child("gateout").setValue("null");
                     dbHistoryNow.child("ongoing").setValue(true);
                     dbUser.child("ongoing").setValue(code+timestamp);
+
+                    dbSta.child("nama").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            txvOrigin.setText("Sta. " + dataSnapshot.getValue().toString());
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
             if(code.split("_")[1].equals("out")){
@@ -88,6 +177,18 @@ public class RideActivity extends AppCompatActivity {
                             dbHistoryNow.child("timeout").setValue(timestamp);
                             dbHistoryNow.child("ongoing").setValue(false);
                             dbUser.child("ongoing").setValue("");
+
+                            dbSta.child("nama").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    txvOrigin.setText("Sta. " + dataSnapshot.getValue().toString());
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                         }
                     }
 
@@ -106,7 +207,57 @@ public class RideActivity extends AppCompatActivity {
         }
     }
 
-    private void setView(){
+    private void loadScanView(){
+        Intent intent = new Intent(this, ScanActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
+    private void loadPaymentView(){
+        Intent intent = new Intent(this, PaymentActivity.class);
+        intent.putExtra("triggerView", "rideActivity");
+        startActivity(intent);
+        finish();
+    }
+
+    private void loadOnRideView(){
+        if (User.ongoing.equalsIgnoreCase("")) {
+            Intent intent = new Intent(this, GetRideActivity.class);
+            startActivity(intent);
+        } else{
+            loadHistoryView();
+        }
+    }
+
+    private void loadHistoryView(){
+        Intent intent = new Intent(this, HistoryActivity.class);
+        startActivity(intent);
+    }
+
+    private void loadAccountView(){
+        Intent intent = new Intent(this, AccountActivity.class);
+        startActivity(intent);
+    }
+
+    private void loadHomeView(){
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void loadLoginView(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
