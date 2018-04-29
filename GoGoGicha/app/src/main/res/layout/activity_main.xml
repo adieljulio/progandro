@@ -51,17 +51,17 @@
         android:layout_marginTop="20dp"/>
 
     <Button
-        android:id="@+id/btnLoginFB"
+        android:id="@+id/btnLoginGoogle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="casual"
-        android:text="@string/loginFB"
+        android:text="@string/loginGoogle"
         android:textStyle="bold"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"/>
 
     <TextView
-        android:id="@+id/btnSignUp"
+        android:id="@+id/txvSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/signup"

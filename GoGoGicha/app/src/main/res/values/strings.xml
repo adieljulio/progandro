@@ -3,7 +3,7 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="loginFB">Login with Facebook</string>
+    <string name="loginGoogle">Login with Facebook</string>
     <string name="signup">Sign Up</string>
     <string name="balance">My Balance:</string>
     <string name="ride">Let\'s Ride</string>

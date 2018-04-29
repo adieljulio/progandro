@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText txtUsername;
     private EditText txtPassword;
     private Button btnLogin;
-    private Button btnLoginFB;
-    private TextView btnSignUp;
+    private Button btnLoginGoogle;
+    private TextView txvSignUp;
     private DrawerLayout mDrawerLayout;
     private boolean check;
 
@@ -45,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
         txtUsername = (EditText)findViewById(R.id.txtUsername);
         txtPassword = (EditText)findViewById(R.id.txtPassword);
         btnLogin = (Button)findViewById(R.id.btnLogin);
-        btnLoginFB = (Button)findViewById(R.id.btnLoginFB);
-        btnSignUp = (TextView)findViewById(R.id.btnSignUp);
+        btnLoginGoogle = (Button)findViewById(R.id.btnLoginGoogle);
+        txvSignUp = (TextView)findViewById(R.id.txvSignUp);
 
         db = FirebaseDatabase.getInstance();
         dbUser = db.getReference("user").child(User.user);
@@ -90,12 +89,31 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
+
+        btnLoginGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        txvSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadSignUpView();
+            }
+        });
     }
 
     private void loadHomeView(){
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void loadSignUpView(){
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
     }
 
     @Override
