@@ -14,6 +14,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * Created by hp on 30/04/2018.
  */
@@ -24,6 +27,8 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText txtPasswordSignup;
     private Button btnSignUp;
     private DrawerLayout mDrawerLayout;
+    private FirebaseDatabase db;
+    private DatabaseReference dbUser;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -135,7 +136,10 @@ public class RideActivity extends AppCompatActivity {
                     dbSta.child("nama").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            txvOrigin.setText("Sta. " + dataSnapshot.getValue().toString());
+                            User.origin = dataSnapshot.getValue().toString();
+                            txvOrigin.setText("Sta. " + User.origin);
+                            User.boardingTime = timestamp;
+                            txvBoardingTime.setText(timestamp);
                         }
 
                         @Override
@@ -181,7 +185,10 @@ public class RideActivity extends AppCompatActivity {
                             dbSta.child("nama").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    txvOrigin.setText("Sta. " + dataSnapshot.getValue().toString());
+                                    User.dest = dataSnapshot.getValue().toString();
+                                    txvDest.setText("Sta. " + User.dest);
+                                    User.arrivedTime = timestamp;
+                                    txvArrivedTime.setText(timestamp);
                                 }
 
                                 @Override
@@ -205,6 +212,11 @@ public class RideActivity extends AppCompatActivity {
             dbHistoryNow = dbHistory.child(getIntent().getExtras().getString("key"));
 
         }
+
+        txvOrigin.setText("Sta. " + User.origin);
+        txvDest.setText("Sta. " + User.dest);
+        txvBoardingTime.setText(User.boardingTime);
+        txvArrivedTime.setText(User.arrivedTime);
     }
 
     private void loadScanView(){
@@ -214,6 +226,14 @@ public class RideActivity extends AppCompatActivity {
     }
 
     private void loadPaymentView(){
+        User.origin = "";
+        User.dest = "";
+        User.arrivedTime = "";
+        User.boardingTime = "";
+        txvOrigin.setText("");
+        txvDest.setText("");
+        txvBoardingTime.setText("");
+        txvArrivedTime.setText("");
         Intent intent = new Intent(this, PaymentActivity.class);
         intent.putExtra("triggerView", "rideActivity");
         startActivity(intent);

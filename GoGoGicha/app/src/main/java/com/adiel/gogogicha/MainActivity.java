@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         txtUsername = (EditText)findViewById(R.id.txtUsername);
         txtPassword = (EditText)findViewById(R.id.txtPassword);
         btnLogin = (Button)findViewById(R.id.btnLogin);
-        btnLoginGoogle = (Button)findViewById(R.id.btnLoginGoogle);
+        //btnLoginGoogle = (Button)findViewById(R.id.btnLoginGoogle);
         txvSignUp = (TextView)findViewById(R.id.txvSignUp);
 
         db = FirebaseDatabase.getInstance();
@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                             if (pass.equalsIgnoreCase(txtPassword.getText().toString())){
                                 loadHomeView();
                             }
+                            else{
+                                Toast.makeText(getApplicationContext(), "Username or password incorrect", Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
 
@@ -90,12 +93,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnLoginGoogle.setOnClickListener(new View.OnClickListener() {
+        /*btnLoginGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
-        });
+        });*/
 
         txvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,5 +127,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
