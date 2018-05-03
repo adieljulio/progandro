@@ -57,7 +57,6 @@ public class RideActivity2 extends AppCompatActivity {
 
         txvOrigin = (TextView)findViewById(R.id.txvOrigin);
         txvDest = (TextView)findViewById(R.id.txvDest);
-        btnScanOri = (Button)findViewById(R.id.btnScanOri);
         btnScanDest = (Button)findViewById(R.id.btnScanDest);
 
         btnScanOri.setOnClickListener(new View.OnClickListener() {

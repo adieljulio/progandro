@@ -46,8 +46,12 @@ public class RideActivity extends AppCompatActivity {
     private DatabaseReference dbHistory;
     private DatabaseReference dbHistoryNow;
     private DatabaseReference dbSta;
-    private String ongoing;
     private String code;
+
+    String gatein;
+    String gateout;
+    String timein ;
+    String timeout;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,8 +123,6 @@ public class RideActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance();
         dbUser = db.getReference("user").child(User.user);
         dbHistory = dbUser.child("history");
-        dbSta = db.getReference("sta").child("lpn");
-
         if(getIntent().getExtras().getString("code")!=null){
             code = getIntent().getExtras().getString("code");
             final String timestamp = new SimpleDateFormat("_yyyy_MM_dd_HH_mm_ss").format(new Date());
@@ -129,24 +131,13 @@ public class RideActivity extends AppCompatActivity {
                     dbHistory.child(code + timestamp).child("gatein").setValue(code);
                     dbHistoryNow = dbHistory.child(code + timestamp);
                     dbHistoryNow.child("timein").setValue(timestamp);
-                    dbHistoryNow.child("gateout").setValue("null");
+                    dbHistoryNow.child("timeout").setValue("");
+                    dbHistoryNow.child("gateout").setValue("");
                     dbHistoryNow.child("ongoing").setValue(true);
                     dbUser.child("ongoing").setValue(code+timestamp);
 
-                    dbSta.child("nama").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            User.origin = dataSnapshot.getValue().toString();
-                            txvOrigin.setText("Sta. " + User.origin);
-                            User.boardingTime = timestamp;
-                            txvBoardingTime.setText(timestamp);
-                        }
+                    setView();
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
                 }
             }
             if(code.split("_")[1].equals("out")){
@@ -168,35 +159,61 @@ public class RideActivity extends AppCompatActivity {
 
                     }
                 })*/
-                dbUser.child("ongoing").addValueEventListener(new ValueEventListener() {
+                Log.e("U",User.ongoing);
+                dbHistoryNow = dbHistory.child(User.ongoing);
+                dbHistoryNow.child("gateout").setValue(code);
+                dbHistoryNow.child("timeout").setValue(timestamp);
+                dbHistoryNow.child("ongoing").setValue(false);
+                setView();
+                dbUser.child("ongoing").setValue("");
+
+            }
+
+        }
+        if(getIntent().getExtras().getString("key")!=null){
+            dbHistoryNow = dbHistory.child(getIntent().getExtras().getString("key"));
+            setView();
+        }
+
+
+
+    }
+
+
+    private void setView(){
+        dbHistoryNow.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                gatein = dataSnapshot.child("gatein").getValue().toString();
+                gateout = dataSnapshot.child("gateout").getValue().toString();
+                timein = dataSnapshot.child("timein").getValue().toString();
+                timeout = dataSnapshot.child("timeout").getValue().toString();
+                String gateinparse[] = gatein.split("_");
+                String gateoutparse[] = gateout.split("_");
+                String timeinparse[] = timein.split("_");
+                String timeoutparse[] = timeout.split("_");
+
+
+                Log.d("D"," "+gatein+" "+gateout+" "+timein+" "+timeout+" ");
+
+                for (int i=0 ;i<gateinparse.length;i++){
+                    Log.d("I",i+" "+gateinparse[i]);
+                }
+                for (int i=0 ;i<gateoutparse.length;i++){
+                    Log.d("I",i+" "+gateoutparse[i]);
+                }
+                for (int i=0 ;i<timeinparse.length;i++){
+                    Log.d("I",i+" "+timeinparse[i]);
+                }
+                for (int i=0 ;i<timeoutparse.length;i++){
+                    Log.d("I",i+" "+timeoutparse[i]);
+                }
+                DatabaseReference dbStaIn = db.getReference("sta").child(gateinparse[0]);
+                dbStaIn.child("nama").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        User.ongoing=dataSnapshot.getValue().toString();
-                        ongoing = dataSnapshot.getValue().toString();
-
-                        Log.e("I",""+ongoing);
-                        if(!dataSnapshot.getValue().equals("")) {
-                            dbHistoryNow = dbHistory.child(ongoing);
-                            dbHistoryNow.child("gateout").setValue(code);
-                            dbHistoryNow.child("timeout").setValue(timestamp);
-                            dbHistoryNow.child("ongoing").setValue(false);
-                            dbUser.child("ongoing").setValue("");
-
-                            dbSta.child("nama").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    User.dest = dataSnapshot.getValue().toString();
-                                    txvDest.setText("Sta. " + User.dest);
-                                    User.arrivedTime = timestamp;
-                                    txvArrivedTime.setText(timestamp);
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-                        }
+                        String nama =  dataSnapshot.getValue().toString();
+                        txvOrigin.setText("Sta. " + nama);
                     }
 
                     @Override
@@ -205,18 +222,41 @@ public class RideActivity extends AppCompatActivity {
                     }
                 });
 
+
+
+                if(gateout.equals("")){
+                    txvDest.setText("-");
+                }else{
+                    DatabaseReference dbStaOut = db.getReference("sta").child(gateoutparse[0]);
+                    dbStaOut.child("nama").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String nama =  dataSnapshot.getValue().toString();
+                            txvDest.setText("Sta. " + nama);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                if(!timein.equals(""))
+                    txvBoardingTime.setText(timeinparse[4]+":"+timeinparse[5]+":"+timeinparse[6]+" "+timeinparse[3]+"/"+timeinparse[2]+"/"+timeinparse[1]);
+                if(!timeout.equals(""))
+                    txvArrivedTime.setText(timeoutparse[4]+":"+timeoutparse[5]+":"+timeoutparse[6]+" "+timeoutparse[3]+"/"+timeoutparse[2]+"/"+timeoutparse[1]);
+
+                Log.e("D",gatein+" "+gateout);
+
             }
 
-        }
-        if(getIntent().getExtras().getString("key")!=null){
-            dbHistoryNow = dbHistory.child(getIntent().getExtras().getString("key"));
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        }
+            }
+        });
 
-        txvOrigin.setText("Sta. " + User.origin);
-        txvDest.setText("Sta. " + User.dest);
-        txvBoardingTime.setText(User.boardingTime);
-        txvArrivedTime.setText(User.arrivedTime);
+
     }
 
     private void loadScanView(){

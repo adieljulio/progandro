@@ -9,10 +9,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by hp on 27/04/2018.
@@ -33,7 +39,17 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_home);
+        FirebaseDatabase.getInstance().getReference("user").child(User.user).child("ongoing").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User.ongoing = dataSnapshot.getValue().toString();
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         Toolbar toolbar = findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
@@ -138,12 +154,17 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void loadOnRideView(){
-        if (User.ongoing.equalsIgnoreCase("")) {
-            Intent intent = new Intent(this, GetRideActivity.class);
+        Log.d("D","/"+User.ongoing+"/");
+        if (User.ongoing.equals("")) {
+            Intent intent = new Intent(this, ScanActivity.class);
             startActivity(intent);
         } else{
-            loadHistoryView();
+            Intent intent = new Intent(this, RideActivity.class);
+            intent.putExtra("key", User.ongoing);
+            startActivity(intent);
         }
+
+
     }
 
     private void loadHistoryView(){

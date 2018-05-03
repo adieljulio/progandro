@@ -27,6 +27,7 @@ import java.util.List;
  */
 
 public class HistoryActivity extends AppCompatActivity {
+    List<History> historyList;
     private HistoryAdapter historyAdapter;
     private RecyclerView rcyHistory;
     private DrawerLayout mDrawerLayout;
@@ -78,25 +79,32 @@ public class HistoryActivity extends AppCompatActivity {
 
         //instansiasi atribut
         rcyHistory= (RecyclerView)findViewById(R.id.rcyHistory);
-        List<History> listFilm = new ArrayList<History>();
-        historyAdapter = new HistoryAdapter(listFilm, this);
+
+        historyList = new ArrayList<History>();
+        historyAdapter = new HistoryAdapter(historyList, this);
 
         //menggabungkan RecyclerView dengan FilmAdapter
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this);
         rcyHistory.setLayoutManager(lm);
         rcyHistory.setItemAnimator(new DefaultItemAnimator());
         rcyHistory.setAdapter(historyAdapter);
-
+        db = FirebaseDatabase.getInstance();
         dbUser = db.getReference("user").child(User.user);
         dbHistory = dbUser.child("history");
 
-        final List<History> historyList = new ArrayList<History>();
 
         dbHistory.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                History history = dataSnapshot.getValue(History.class);
-                historyList.add(history);
+                historyList.clear();
+                for (DataSnapshot data : dataSnapshot.getChildren()){
+                    if(data.child("ongoing").getValue()!=null){
+                        History history = new History(data.getKey(), data.child("timein").getValue().toString(), data.child("timeout").getValue().toString(), data.child("gatein").getValue().toString(), data.child("gateout").getValue().toString());
+                        historyList.add(history);
+                    }
+                }
+                historyAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -105,15 +113,33 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
 
-        historyAdapter.notifyDataSetChanged();
     }
 
     private void loadOnRideView(){
+        FirebaseDatabase.getInstance().getReference("user").child(User.user).child("ongoing").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String ongoing = dataSnapshot.getValue().toString();
+                goView(ongoing);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void goView(String ongoing){
         if (User.ongoing.equalsIgnoreCase("")) {
-            Intent intent = new Intent(this, GetRideActivity.class);
+            Intent intent = new Intent(this, ScanActivity.class);
             startActivity(intent);
         } else{
-            loadHistoryView();
+            Intent intent = new Intent(this, RideActivity.class);
+            intent.putExtra("key", ongoing);
+            startActivity(intent);
         }
     }
 
