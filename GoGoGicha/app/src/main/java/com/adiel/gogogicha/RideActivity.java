@@ -25,9 +25,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Adiel on 4/27/2018.
@@ -37,7 +39,6 @@ public class RideActivity extends AppCompatActivity {
     private TextView txvOrigin;
     private TextView txvDest;
     private Button btnScanDest;
-    private Button btnDone;
     private TextView txvBoardingTime;
     private TextView txvArrivedTime;
     private DrawerLayout mDrawerLayout;
@@ -104,7 +105,6 @@ public class RideActivity extends AppCompatActivity {
         btnScanDest = (Button)findViewById(R.id.btnScanDest);
         txvBoardingTime = (TextView)findViewById(R.id.txvBoardingTime);
         txvArrivedTime = (TextView)findViewById(R.id.txvArrivedTime);
-        btnDone = (Button)findViewById(R.id.btnDone);
 
         btnScanDest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,34 +113,27 @@ public class RideActivity extends AppCompatActivity {
             }
         });
 
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadPaymentView();
-            }
-        });
 
         db = FirebaseDatabase.getInstance();
-        dbUser = db.getReference("user").child(User.user);
+        dbUser = db.getReference("user").child(MainActivity.sp.getString("id",null));
         dbHistory = dbUser.child("history");
-        if(getIntent().getExtras().getString("code")!=null){
+        if(getIntent().getExtras().getString("code")!=null) {
             code = getIntent().getExtras().getString("code");
             final String timestamp = new SimpleDateFormat("_yyyy_MM_dd_HH_mm_ss").format(new Date());
-            if(code.split("_")[1].equals("in")) {
-                if(User.ongoing.equals("")) {
+            if (code.split("_")[1].equals("in")) {
+                if (MainActivity.sp.getString("ongoing", "").equals("")) {
                     dbHistory.child(code + timestamp).child("gatein").setValue(code);
                     dbHistoryNow = dbHistory.child(code + timestamp);
                     dbHistoryNow.child("timein").setValue(timestamp);
                     dbHistoryNow.child("timeout").setValue("");
                     dbHistoryNow.child("gateout").setValue("");
                     dbHistoryNow.child("ongoing").setValue(true);
-                    dbUser.child("ongoing").setValue(code+timestamp);
-
+                    dbHistoryNow.child("cost").setValue("-");
+                    dbUser.child("ongoing").setValue(code + timestamp);
                     setView();
-
                 }
             }
-            if(code.split("_")[1].equals("out")){
+            if (code.split("_")[1].equals("out")) {
                 /*
                 dbUser.child("ongoing").addValueEventListener(new ValueEventListener() {
                     @Override
@@ -159,35 +152,77 @@ public class RideActivity extends AppCompatActivity {
 
                     }
                 })*/
-                Log.e("U",User.ongoing);
-                dbHistoryNow = dbHistory.child(User.ongoing);
-                dbHistoryNow.child("gateout").setValue(code);
-                dbHistoryNow.child("timeout").setValue(timestamp);
-                dbHistoryNow.child("ongoing").setValue(false);
-                setView();
-                dbUser.child("ongoing").setValue("");
+                Log.e("ongoing", MainActivity.sp.getString("ongoing", ""));
+                dbUser.child("ongoing").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        dbHistoryNow = dbHistory.child(dataSnapshot.getValue().toString());
+
+                        dbHistoryNow.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                db.getReference("sta").child(dataSnapshot.child("gatein").getValue().toString().split("_")[0]).child("cost").child(code.split("_")[0]).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Log.d("cost",dataSnapshot.getValue().toString());
+                                        if(Integer.parseInt(dataSnapshot.getValue().toString())>MainActivity.sp.getInt("balance",0)){
+                                            Toast.makeText(getApplicationContext(), "Your Balance is not enough", Toast.LENGTH_LONG).show();
+                                            setView();
+                                        }else {
+                                            dbHistoryNow.child("gateout").setValue(code);
+                                            dbHistoryNow.child("timeout").setValue(timestamp);
+                                            dbHistoryNow.child("ongoing").setValue(false);
+                                            dbHistoryNow.child("cost").setValue(dataSnapshot.getValue().toString());
+                                            dbUser.child("balance").setValue(MainActivity.sp.getInt("balance", 0) - Integer.parseInt(dataSnapshot.getValue().toString()));
+                                            btnScanDest.setVisibility(View.INVISIBLE);
+                                            setView();
+                                            dbUser.child("ongoing").setValue("");
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
             }
 
-        }
-        if(getIntent().getExtras().getString("key")!=null){
+        }else if(getIntent().getExtras().getString("key")!=null){
             dbHistoryNow = dbHistory.child(getIntent().getExtras().getString("key"));
             setView();
         }
-
-
-
     }
 
 
     private void setView(){
-        dbHistoryNow.addValueEventListener(new ValueEventListener() {
+
+        dbHistoryNow.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 gatein = dataSnapshot.child("gatein").getValue().toString();
                 gateout = dataSnapshot.child("gateout").getValue().toString();
                 timein = dataSnapshot.child("timein").getValue().toString();
                 timeout = dataSnapshot.child("timeout").getValue().toString();
+                String cost = dataSnapshot.child("cost").getValue().toString();
+                TextView txvCost = (TextView)findViewById(R.id.txvCost);
+                txvCost.setText(cost);
                 String gateinparse[] = gatein.split("_");
                 String gateoutparse[] = gateout.split("_");
                 String timeinparse[] = timein.split("_");
@@ -209,7 +244,7 @@ public class RideActivity extends AppCompatActivity {
                     Log.d("I",i+" "+timeoutparse[i]);
                 }
                 DatabaseReference dbStaIn = db.getReference("sta").child(gateinparse[0]);
-                dbStaIn.child("nama").addValueEventListener(new ValueEventListener() {
+                dbStaIn.child("nama").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String nama =  dataSnapshot.getValue().toString();
@@ -228,11 +263,13 @@ public class RideActivity extends AppCompatActivity {
                     txvDest.setText("-");
                 }else{
                     DatabaseReference dbStaOut = db.getReference("sta").child(gateoutparse[0]);
-                    dbStaOut.child("nama").addValueEventListener(new ValueEventListener() {
+                    dbStaOut.child("nama").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String nama =  dataSnapshot.getValue().toString();
                             txvDest.setText("Sta. " + nama);
+
+                            btnScanDest.setVisibility(View.INVISIBLE);
                         }
 
                         @Override
@@ -247,6 +284,7 @@ public class RideActivity extends AppCompatActivity {
                     txvArrivedTime.setText(timeoutparse[4]+":"+timeoutparse[5]+":"+timeoutparse[6]+" "+timeoutparse[3]+"/"+timeoutparse[2]+"/"+timeoutparse[1]);
 
                 Log.e("D",gatein+" "+gateout);
+                ScanActivity.isScaned=false;
 
             }
 
@@ -265,28 +303,18 @@ public class RideActivity extends AppCompatActivity {
         finish();
     }
 
-    private void loadPaymentView(){
-        User.origin = "";
-        User.dest = "";
-        User.arrivedTime = "";
-        User.boardingTime = "";
-        txvOrigin.setText("");
-        txvDest.setText("");
-        txvBoardingTime.setText("");
-        txvArrivedTime.setText("");
-        Intent intent = new Intent(this, PaymentActivity.class);
-        intent.putExtra("triggerView", "rideActivity");
-        startActivity(intent);
-        finish();
-    }
 
     private void loadOnRideView(){
-        if (User.ongoing.equalsIgnoreCase("")) {
-            Intent intent = new Intent(this, GetRideActivity.class);
+        if (MainActivity.sp.getString("ongoing","").equals("")) {
+            Intent intent = new Intent(this, ScanActivity.class);
             startActivity(intent);
         } else{
-            loadHistoryView();
+            Intent intent = new Intent(this, RideActivity.class);
+            intent.putExtra("key", MainActivity.sp.getString("ongoing",""));
+            startActivity(intent);
         }
+
+
     }
 
     private void loadHistoryView(){

@@ -1,7 +1,10 @@
 package com.adiel.gogogicha;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +22,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by hp on 27/04/2018.
@@ -33,23 +42,15 @@ public class HomeActivity extends AppCompatActivity {
     private TextView txvBuying;
     private TextView txvHistory;
     private TextView txvAccount;
+    private TextView txvBalance;
+
     private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_home);
-        FirebaseDatabase.getInstance().getReference("user").child(User.user).child("ongoing").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User.ongoing = dataSnapshot.getValue().toString();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         Toolbar toolbar = findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
@@ -80,6 +81,8 @@ public class HomeActivity extends AppCompatActivity {
                         } else if (id == R.id.nav_account){
                             loadAccountView();
                         } else if (id == R.id.nav_logout){
+                            MainActivity.edit.clear();
+                            MainActivity.edit.commit();
                             loadLoginView();
                         }
 
@@ -95,6 +98,7 @@ public class HomeActivity extends AppCompatActivity {
         txvBuying = (TextView)findViewById(R.id.txvBuying);
         txvHistory = (TextView)findViewById(R.id.txvHistory);
         txvAccount = (TextView)findViewById(R.id.txvAccount);
+        txvBalance = (TextView)findViewById(R.id.txvBalance);
 
         imvOnRide.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,16 +155,16 @@ public class HomeActivity extends AppCompatActivity {
                 loadAccountView();
             }
         });
+        initialize();
     }
 
     private void loadOnRideView(){
-        Log.d("D","/"+User.ongoing+"/");
-        if (User.ongoing.equals("")) {
+        if (MainActivity.sp.getString("ongoing","").equals("")) {
             Intent intent = new Intent(this, ScanActivity.class);
             startActivity(intent);
         } else{
             Intent intent = new Intent(this, RideActivity.class);
-            intent.putExtra("key", User.ongoing);
+            intent.putExtra("key", MainActivity.sp.getString("ongoing",""));
             startActivity(intent);
         }
 
@@ -204,6 +208,44 @@ public class HomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    private void initialize(){
+        if(MainActivity.sp.getString("id",null)==null){
+            loadLoginView();
+        }else{
+            Log.e("user",MainActivity.sp.getString("id",null)+"");
+            MainActivity.db.getReference("user").child(MainActivity.sp.getString("id",null)).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    MainActivity.edit.putString("email",dataSnapshot.child("email").getValue().toString());
+                    MainActivity.edit.putString("ongoing",dataSnapshot.child("ongoing").getValue().toString());
 
+                    /*
+                    List<History> historyList = new ArrayList<History>();
+
+                    for (DataSnapshot data : dataSnapshot.child("history").getChildren()) {
+                        if (data.child("ongoing").getValue() != null) {
+                            History history = new History(data.getKey(), data.child("timein").getValue().toString(), data.child("timeout").getValue().toString(), data.child("gatein").getValue().toString(), data.child("gateout").getValue().toString(),data.child("cost").getValue().toString());
+                            historyList.add(history);
+                        }
+                    }
+                    User.historyList=historyList;
+                    Gson gson = new Gson();
+                    String string = gson.toJson(historyList);
+                    MainActivity.edit.putString("historyList",string);
+                    */
+                    txvBalance.setText(NumberFormat.getCurrencyInstance(new Locale("in", "ID")).format(dataSnapshot.child("balance").getValue()));
+                    MainActivity.edit.putInt("balance",Integer.parseInt(dataSnapshot.child("balance").getValue().toString()));
+                    MainActivity.edit.commit();
+
+                    Log.e("ongoing",MainActivity.sp.getString("ongoing",""));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
 }
 

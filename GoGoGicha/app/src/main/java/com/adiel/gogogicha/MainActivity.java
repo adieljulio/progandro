@@ -1,6 +1,8 @@
 package com.adiel.gogogicha;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -8,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import org.w3c.dom.Text;
 
@@ -32,8 +36,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView txvSignUp;
     private DrawerLayout mDrawerLayout;
     private boolean check;
-
-    private FirebaseDatabase db;
+    protected static SharedPreferences sp;
+    protected static SharedPreferences.Editor edit;
+    protected static FirebaseDatabase db = FirebaseDatabase.getInstance();;
     private DatabaseReference dbUser;
 
     @Override
@@ -41,48 +46,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        db = FirebaseDatabase.getInstance();
+        sp = this.getSharedPreferences("gogitcha",this.MODE_PRIVATE);
+        edit = sp.edit();
         txtUsername = (EditText)findViewById(R.id.txtUsername);
         txtPassword = (EditText)findViewById(R.id.txtPassword);
         btnLogin = (Button)findViewById(R.id.btnLogin);
         //btnLoginGoogle = (Button)findViewById(R.id.btnLoginGoogle);
         txvSignUp = (TextView)findViewById(R.id.txvSignUp);
 
-        db = FirebaseDatabase.getInstance();
-        dbUser = db.getReference("user").child(User.user);
-
+        initialize();
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dbUser.child("id").addValueEventListener(new ValueEventListener() {
+                db.getReference("user").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        String id = dataSnapshot.getValue().toString();
-                        if (id.equalsIgnoreCase(txtUsername.getText().toString())){
-                            check = true;
-                        }
-                        else{
-                            Toast.makeText(getApplicationContext(), "Username or password incorrect", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-                dbUser.child("password").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String pass = dataSnapshot.getValue().toString();
-                        if (check == true){
-                            if (pass.equalsIgnoreCase(txtPassword.getText().toString())){
+                        if(dataSnapshot.hasChild(txtUsername.getText().toString())) {
+                            Log.d("login","ada");
+                            String id = txtUsername.getText().toString();
+                            String password = dataSnapshot.child(txtUsername.getText().toString()).child("password").getValue().toString();
+                            if (password.equalsIgnoreCase(txtPassword.getText().toString())) {
+                                edit.putString("id",id);
+                                edit.commit();
                                 loadHomeView();
-                            }
-                            else{
+                            } else {
                                 Toast.makeText(getApplicationContext(), "Username or password incorrect", Toast.LENGTH_LONG).show();
                             }
+                        } else {
+
+                            Log.d("login","ga");
+                            Toast.makeText(getApplicationContext(), "Username or password incorrect", Toast.LENGTH_LONG).show();
                         }
+
                     }
 
                     @Override
@@ -90,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+
+
             }
         });
 
@@ -106,6 +104,13 @@ public class MainActivity extends AppCompatActivity {
                 loadSignUpView();
             }
         });
+    }
+
+    private void initialize(){
+        if(sp.getString("id",null)!=null){
+            User.user = sp.getString("id",null);
+            loadHomeView();
+        }
     }
 
     private void loadHomeView(){

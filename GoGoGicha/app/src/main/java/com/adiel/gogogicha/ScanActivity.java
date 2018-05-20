@@ -21,16 +21,14 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 public class ScanActivity extends Activity implements QRCodeReaderView.OnQRCodeReadListener {
 
-    private TextView resultTextView;
     private QRCodeReaderView qrCodeReaderView;
     private String result = "";
-    private boolean isScaned = false;
+    protected static boolean isScaned = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-        resultTextView = (TextView) findViewById(R.id.txvScan);
 
         qrCodeReaderView = (QRCodeReaderView) findViewById(R.id.qrView);
         qrCodeReaderView.setOnQRCodeReadListener(this);
@@ -56,6 +54,7 @@ public class ScanActivity extends Activity implements QRCodeReaderView.OnQRCodeR
     // "points" : points where QR control points are placed in View
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
+        finish();
         result = text;
         String[] data = result.split("/");
         Intent intent = new Intent(this,RideActivity.class);
@@ -63,12 +62,19 @@ public class ScanActivity extends Activity implements QRCodeReaderView.OnQRCodeR
             Log.d("I",i+" "+data[i]);
         }
         if(data[2].equals("gogogicha.com")&&!isScaned){
+
+            isScaned=true;
             if(data.length>3){
-                resultTextView.setText(data[3]);
+                finish();
                 intent.putExtra("code",data[3]);
-                isScaned=true;
+                String[] parse = data[3].split("_");
+                if(parse[0].equals("drinks")){
+                    intent = new Intent(this,PaymentActivity.class);
+                    intent.putExtra("code",data[3]);
+                }
                 startActivity(intent);
-                isScaned=false;
+
+
             }
         }
     }

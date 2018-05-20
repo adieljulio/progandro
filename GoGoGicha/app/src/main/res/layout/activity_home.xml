@@ -29,21 +29,23 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="My Balance"
-                android:textStyle="bold"
-                android:layout_marginLeft="200dp"
-                android:fontFamily="casual"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rp 0"
+                android:layout_marginLeft="20dp"
                 android:fontFamily="casual"
+                android:text="My Balance"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txvBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-                android:textStyle="bold"/>
+                android:fontFamily="casual"
+                android:text="Rp 0"
+                android:textStyle="bold" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

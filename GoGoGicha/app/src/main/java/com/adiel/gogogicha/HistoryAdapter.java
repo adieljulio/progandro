@@ -37,8 +37,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.FilmHold
     public void onBindViewHolder(FilmHolder holder, int position) {
         History history = listHistory.get(position);
         String timeinparse[] = history.getBoardingTime().split("_");
-        holder.txvTime.setText(timeinparse[4]+":"+timeinparse[5]+":"+timeinparse[6]+" "+timeinparse[3]+"/"+timeinparse[2]+"/"+timeinparse[1]);
-        holder.txvTitle.setText(history.getOrigin().split("_")[0].toUpperCase() + "->" + history.getDestination().split("_")[0].toUpperCase());
+        if(history.getTitle().split("_")[0].equals("drinks")){
+            holder.txvTitle.setText(history.getTitle().split("_")[4]+"-"+history.getTitle().split("_")[1].toUpperCase());
+        }else {
+            holder.txvTitle.setText(history.getOrigin().split("_")[0].toUpperCase() + "->" + history.getDestination().split("_")[0].toUpperCase());
+        }
+        holder.txvTime.setText(timeinparse[4] + ":" + timeinparse[5] + ":" + timeinparse[6] + " " + timeinparse[3] + "/" + timeinparse[2] + "/" + timeinparse[1]);
 
     }
 
@@ -66,8 +70,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.FilmHold
     }
 
     public void loadRideView(int pos){
-        Intent intent = new Intent(mContext, RideActivity.class);
-        intent.putExtra("key",listHistory.get(pos).getTitle());
-        mContext.startActivity(intent);
+        History history = listHistory.get(pos);
+
+        if(!history.getTitle().split("_")[0].equals("drinks")) {
+            Intent intent = new Intent(mContext, RideActivity.class);
+            intent.putExtra("key", listHistory.get(pos).getTitle());
+            mContext.startActivity(intent);
+        }
     }
 }

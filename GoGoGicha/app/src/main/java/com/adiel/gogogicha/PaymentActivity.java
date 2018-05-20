@@ -2,6 +2,7 @@ package com.adiel.gogogicha;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -9,12 +10,24 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+
 import org.w3c.dom.Text;
+
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by hp on 27/04/2018.
@@ -37,11 +50,7 @@ public class PaymentActivity extends AppCompatActivity {
         txvBalance = (TextView)findViewById(R.id.txvBalance);
         btnFinish = (Button)findViewById(R.id.btnFinish);
 
-        if (getIntent().getExtras().getString("triggerView").equalsIgnoreCase("buyingActivity")){
-            txvPaymentTitle.setText("Your've Buy A/An Item !");
-        } else{
-            txvPaymentTitle.setText("You've Arrived At Your Destination !");
-        }
+
 
         Toolbar toolbar = findViewById(R.id.payment_toolbar);
         setSupportActionBar(toolbar);
@@ -86,15 +95,47 @@ public class PaymentActivity extends AppCompatActivity {
                 loadHomeView();
             }
         });
+        if(getIntent().getExtras().getString("code")!=null) {
+            String code = getIntent().getExtras().getString("code");
+            int cost = Integer.parseInt(code.split("_")[5]);
+            if(cost > MainActivity.sp.getInt("balance",0)){
+                txvPaymentTitle.setText("Yout Balance is Not Enough");
+                txvPayment.setText(NumberFormat.getCurrencyInstance(new Locale("in", "ID")).format(0));
+                txvBalance.setText(NumberFormat.getCurrencyInstance(new Locale("in", "ID")).format(MainActivity.sp.getInt("balance",0)));
+            }else {
+                int balance = MainActivity.sp.getInt("balance", 0) - cost;
+                DatabaseReference dbUser = MainActivity.db.getReference("user").child(MainActivity.sp.getString("id", ""));
+                dbUser.child("balance").setValue(MainActivity.sp.getInt("balance", 0) - cost);
+                DatabaseReference dbHistory = dbUser.child("history");
+                final String timestamp = new SimpleDateFormat("_yyyy_MM_dd_HH_mm_ss").format(new Date());
+                dbHistory.child(code + timestamp).child("gatein").setValue(code);
+                DatabaseReference dbHistoryNow = dbHistory.child(code + timestamp);
+                dbHistoryNow.child("timein").setValue(timestamp);
+                dbHistoryNow.child("timeout").setValue("");
+                dbHistoryNow.child("gateout").setValue("");
+                dbHistoryNow.child("ongoing").setValue(false);
+                dbHistoryNow.child("cost").setValue(NumberFormat.getCurrencyInstance(new Locale("in", "ID")).format(cost));
+                /*
+                String[] parse = code.split("_");
+                String url ="http://adieljulio:gogogicha@broker.shiftr.io/"+parse[1]+"/"+parse[2];
+                new Send().execute(url,parse[3]);
+                */
+                txvPayment.setText(NumberFormat.getCurrencyInstance(new Locale("in", "ID")).format(cost));
+                txvBalance.setText(NumberFormat.getCurrencyInstance(new Locale("in", "ID")).format(balance));
+            }
+        }
     }
 
     private void loadOnRideView(){
-        if (User.ongoing.equalsIgnoreCase("")) {
-            Intent intent = new Intent(this, GetRideActivity.class);
+        if (MainActivity.sp.getString("ongoing","").equals("")) {
+            Intent intent = new Intent(this, ScanActivity.class);
             startActivity(intent);
         } else{
-            loadHistoryView();
+            Intent intent = new Intent(this, RideActivity.class);
+            intent.putExtra("key", MainActivity.sp.getString("ongoing",""));
+            startActivity(intent);
         }
+
     }
 
     private void loadHistoryView(){

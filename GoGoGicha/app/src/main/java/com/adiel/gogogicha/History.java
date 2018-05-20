@@ -10,13 +10,15 @@ public class History {
     private String arrivedTime;
     private String origin;
     private String destination;
+    private String cost;
 
-    public History(String title, String boardingTime, String arrivedTime, String origin, String destination){
+    public History(String title, String boardingTime, String arrivedTime, String origin, String destination,String cost){
         this.title = title;
         this.boardingTime = boardingTime;
         this.arrivedTime = arrivedTime;
         this.origin = origin;
         this.destination = destination;
+        this.cost = cost;
     }
 
     public String getTitle(){

@@ -29,21 +29,21 @@
             android:id="@+id/txvPaymentTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/arrived"
-            android:fontFamily="casual"
-            android:textSize="24sp"
             android:layout_gravity="center"
-            android:textAlignment="center"/>
+            android:fontFamily="casual"
+            android:text="Thank you for purchasing drink"
+            android:textAlignment="center"
+            android:textSize="24sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/payment"
-            android:fontFamily="casual"
             android:layout_gravity="center"
-            android:textAlignment="center"
             android:layout_marginTop="40dp"
-            android:textSize="16sp"/>
+            android:fontFamily="casual"
+            android:text="@string/payment"
+            android:textAlignment="center"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/txvPayment"

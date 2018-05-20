@@ -89,17 +89,17 @@ public class HistoryActivity extends AppCompatActivity {
         rcyHistory.setItemAnimator(new DefaultItemAnimator());
         rcyHistory.setAdapter(historyAdapter);
         db = FirebaseDatabase.getInstance();
-        dbUser = db.getReference("user").child(User.user);
+        dbUser = db.getReference("user").child(MainActivity.sp.getString("id",""));
         dbHistory = dbUser.child("history");
 
 
-        dbHistory.addValueEventListener(new ValueEventListener() {
+        dbHistory.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 historyList.clear();
                 for (DataSnapshot data : dataSnapshot.getChildren()){
                     if(data.child("ongoing").getValue()!=null){
-                        History history = new History(data.getKey(), data.child("timein").getValue().toString(), data.child("timeout").getValue().toString(), data.child("gatein").getValue().toString(), data.child("gateout").getValue().toString());
+                        History history = new History(data.getKey(), data.child("timein").getValue().toString(), data.child("timeout").getValue().toString(), data.child("gatein").getValue().toString(), data.child("gateout").getValue().toString(), data.child("cost").getValue().toString());
                         historyList.add(history);
                     }
                 }
@@ -116,31 +116,16 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void loadOnRideView(){
-        FirebaseDatabase.getInstance().getReference("user").child(User.user).child("ongoing").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String ongoing = dataSnapshot.getValue().toString();
-                goView(ongoing);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-    }
-
-    private void goView(String ongoing){
-        if (User.ongoing.equalsIgnoreCase("")) {
+        if (MainActivity.sp.getString("ongoing","").equals("")) {
             Intent intent = new Intent(this, ScanActivity.class);
             startActivity(intent);
         } else{
             Intent intent = new Intent(this, RideActivity.class);
-            intent.putExtra("key", ongoing);
+            intent.putExtra("key", MainActivity.sp.getString("ongoing",""));
             startActivity(intent);
         }
+
+
     }
 
     private void loadHistoryView(){

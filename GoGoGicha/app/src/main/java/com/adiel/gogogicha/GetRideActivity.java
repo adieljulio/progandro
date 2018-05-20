@@ -80,12 +80,15 @@ public class GetRideActivity extends AppCompatActivity {
     }
 
     private void loadOnRideView(){
-        if (User.ongoing.equalsIgnoreCase("")) {
-            Intent intent = new Intent(this, GetRideActivity.class);
+        if (MainActivity.sp.getString("ongoing","").equals("")) {
+            Intent intent = new Intent(this, ScanActivity.class);
             startActivity(intent);
         } else{
-            loadHistoryView();
+            Intent intent = new Intent(this, RideActivity.class);
+            intent.putExtra("key", MainActivity.sp.getString("ongoing",""));
+            startActivity(intent);
         }
+
     }
 
     private void loadHistoryView(){
