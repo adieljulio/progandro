@@ -15,7 +15,8 @@
         android:textSize="24sp"
         android:textAlignment="center"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:textColor="#63497c"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -74,5 +75,6 @@
         android:textStyle="bold"
         android:layout_gravity="center"
         android:fontFamily="casual"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="50dp"
+        android:backgroundTint="#d4abfc"/>
 </LinearLayout>

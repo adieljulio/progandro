@@ -14,7 +14,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/background">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/ride_toolbar"
@@ -22,7 +23,8 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme" />
+            android:theme="?attr/actionBarTheme"
+            android:backgroundTint="#d4abfc"/>
 
         <TextView
             android:id="@+id/txvRide"
@@ -36,7 +38,8 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="144dp"
             android:textAlignment="center"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:textColor="#63497c"/>
 
         <TextView
             android:id="@+id/TextView"
@@ -95,7 +98,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/scan"
                 android:fontFamily="casual"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:backgroundTint="#d4abfc"/>
 
         </LinearLayout>
 

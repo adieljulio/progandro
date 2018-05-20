@@ -9,7 +9,8 @@
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/background">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/getride_toolbar"
@@ -17,7 +18,8 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme" />
+            android:theme="?attr/actionBarTheme"
+            android:backgroundTint="#d4abfc"/>
 
         <TextView
             android:id="@+id/getRide"
@@ -29,7 +31,8 @@
             android:textAlignment="center"
             android:textSize="24sp"
             android:layout_gravity="center"
-            android:layout_marginTop="80dp"/>
+            android:layout_marginTop="80dp"
+            android:textColor="#63497c"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -48,7 +51,8 @@
             android:text="@string/scan"
             android:layout_marginTop="120dp"
             android:layout_gravity="center"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:backgroundTint="#d4abfc"/>
 
     </LinearLayout>
 
